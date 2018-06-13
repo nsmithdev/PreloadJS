@@ -773,7 +773,10 @@ this.createjs = this.createjs || {};
 				//Remove from the backup queue
 				for (i = this._loadQueueBackup.length - 1; i >= 0; i--) {
 					loadItem = this._loadQueueBackup[i].getItem();
-					if (loadItem.id == item || loadItem.src == item) {
+					if(!loadItem){
+						// Remove objects that have been disposed and have null item
+						this._loadQueueBackup.splice(i, 1)[0].cancel();
+					} else if (!loadItem || loadItem.id == item || loadItem.src == item) {
 						this._loadQueueBackup.splice(i, 1)[0].cancel();
 						break;
 					}
@@ -784,7 +787,11 @@ this.createjs = this.createjs || {};
 				} else {
 					for (var i = this._currentLoads.length - 1; i >= 0; i--) {
 						var loadItem = this._currentLoads[i].getItem();
-						if (loadItem.id == item || loadItem.src == item) {
+						if(!loadItem){
+							// Remove objects that have been disposed and have null item
+							this._currentLoads.splice(i, 1)[0].cancel();
+							itemsWereRemoved = true;
+						} else if (loadItem.id == item || loadItem.src == item) {
 							this._currentLoads.splice(i, 1)[0].cancel();
 							itemsWereRemoved = true;
 							break;
